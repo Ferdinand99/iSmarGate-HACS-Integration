@@ -25,6 +25,21 @@ And communicates with:
 - Battery and temperature sensors (when exposed by device)
 - Polling via Home Assistant `DataUpdateCoordinator`
 
+## Installation (recommended via HACS)
+
+1. Open HACS in Home Assistant.
+2. Select Integrations.
+3. Open the menu (three dots) and choose Custom repositories.
+4. Add repository URL:
+	- `https://github.com/Ferdinand99/iSmarGate-HACS-Integration`
+5. Select category:
+	- `Integration`
+6. Click Add.
+7. Search for `iSmartGate Cloud` in HACS and install it.
+8. Restart Home Assistant.
+9. Go to Settings -> Devices & Services -> Add Integration.
+10. Search for `iSmartGate Cloud` and complete setup.
+
 ## Installation (manual)
 
 1. Copy `custom_components/ismartgate_cloud` to your Home Assistant `custom_components` folder.
