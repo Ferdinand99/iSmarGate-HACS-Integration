@@ -215,6 +215,34 @@ class ISmartGateCloudApi:
             door_node = response.find(f"door{door_id}")
             if door_node is None:
                 continue
+
+            temp_raw = self._find_first_text(
+                door_node,
+                ["temperature", "temp", "tempc", "temperaturec", "tmp"],
+            ) or self._find_first_text(
+                response,
+                [
+                    f"door{door_id}temperature",
+                    f"door{door_id}_temperature",
+                    f"temperature{door_id}",
+                    f"temp{door_id}",
+                    f"door{door_id}temp",
+                ],
+            )
+
+            voltage_raw = self._find_first_text(
+                door_node,
+                ["voltage", "battery", "batterypercent", "battery_level"],
+            ) or self._find_first_text(
+                response,
+                [
+                    f"door{door_id}voltage",
+                    f"voltage{door_id}",
+                    f"door{door_id}battery",
+                    f"battery{door_id}",
+                ],
+            )
+
             doors.append(
                 ISmartGateDoor(
                     door_id=door_id,
@@ -223,8 +251,8 @@ class ISmartGateCloudApi:
                     gate=self._to_bool(self._find_text(door_node, "gate")),
                     status=(self._find_text(door_node, "status") or "undefined").lower(),
                     apicode=self._find_text(door_node, "apicode"),
-                    temperature=self._to_float(self._find_text(door_node, "temperature")),
-                    voltage=self._to_int(self._find_text(door_node, "voltage")),
+                    temperature=self._to_float(temp_raw),
+                    voltage=self._to_int(voltage_raw),
                 )
             )
 
@@ -244,6 +272,14 @@ class ISmartGateCloudApi:
             return None
         text = child.text.strip()
         return text if text != "" else None
+
+    def _find_first_text(self, node: ET.Element, tags: list[str]) -> str | None:
+        """Return the first non-empty value from a list of XML tags."""
+        for tag in tags:
+            value = self._find_text(node, tag)
+            if value is not None:
+                return value
+        return None
 
     @staticmethod
     def _to_bool(value: str | None) -> bool:
@@ -265,6 +301,6 @@ class ISmartGateCloudApi:
         if value in (None, ""):
             return None
         try:
-            return float(value)
+            return float(value.replace(",", "."))
         except ValueError:
             return None
