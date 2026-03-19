@@ -1,0 +1,34 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Koble til iSmartGate Cloud",
+        "description": "Skriv inn iSmartGate sky-legitimasjon.",
+        "data": {
+          "udi": "UDI",
+          "username": "Brukernavn",
+          "password": "Passord",
+          "scan_interval": "Oppdateringsintervall (sekunder)"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Ugyldig innlogging",
+      "cannot_connect": "Kunne ikke koble til",
+      "unknown": "Uventet feil"
+    },
+    "abort": {
+      "already_configured": "Enheten er allerede satt opp"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "iSmartGate Cloud-innstillinger",
+        "data": {
+          "scan_interval": "Oppdateringsintervall (sekunder)"
+        }
+      }
+    }
+  }
+}

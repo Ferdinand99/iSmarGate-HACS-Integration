@@ -1,0 +1,15 @@
+{
+  "domain": "ismartgate_cloud",
+  "name": "iSmartGate Cloud",
+  "version": "0.1.0",
+  "dependencies": [],
+  "requirements": [
+    "cryptography>=41.0.0"
+  ],
+  "codeowners": [],
+  "config_flow": true,
+  "iot_class": "cloud_polling",
+  "loggers": [
+    "custom_components.ismartgate_cloud"
+  ]
+}
