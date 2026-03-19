@@ -8,7 +8,10 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import PERCENTAGE, UnitOfTemperature
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+
+from .const import DOMAIN
 
 
 async def async_setup_entry(hass, entry, async_add_entities) -> None:
@@ -41,6 +44,18 @@ class _ISmartGateBaseSensor(CoordinatorEntity, SensorEntity):
     @property
     def _door(self):
         return self.coordinator.get_door(self._door_id)
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Attach sensor entities to the same device as the cover entity."""
+        info = self.coordinator.data
+        return DeviceInfo(
+            identifiers={(DOMAIN, str(self._entry.unique_id))},
+            name=info.name if info else "iSmartGate",
+            manufacturer="iSmartGate",
+            model=info.model if info else "unknown",
+            sw_version=info.firmware_version if info else "unknown",
+        )
 
 
 class ISmartGateBatterySensor(_ISmartGateBaseSensor):

@@ -1,0 +1,79 @@
+name: Auto Tag And Release
+
+on:
+  workflow_run:
+    workflows:
+      - Validate
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  auto_release:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout validated commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Read version from manifest
+        id: manifest
+        shell: bash
+        run: |
+          version=$(jq -r '.version' custom_components/ismartgate_cloud/manifest.json)
+          if [ -z "$version" ] || [ "$version" = "null" ]; then
+            echo "Manifest version is missing"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Check if tag exists
+        id: tag_check
+        shell: bash
+        run: |
+          tag="${{ steps.manifest.outputs.tag }}"
+          if git ls-remote --tags origin "refs/tags/$tag" | grep -q "$tag"; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stop when version is already released
+        if: steps.tag_check.outputs.exists == 'true'
+        shell: bash
+        run: |
+          echo "Tag ${{ steps.manifest.outputs.tag }} already exists. Skipping release."
+
+      - name: Create and push tag
+        if: steps.tag_check.outputs.exists == 'false'
+        shell: bash
+        run: |
+          tag="${{ steps.manifest.outputs.tag }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "$tag" "${{ github.event.workflow_run.head_sha }}"
+          git push origin "$tag"
+
+      - name: Build release zip
+        if: steps.tag_check.outputs.exists == 'false'
+        shell: bash
+        run: |
+          mkdir -p dist
+          zip -r dist/ismartgate_cloud.zip custom_components hacs.json README.md LICENSE
+
+      - name: Create GitHub release
+        if: steps.tag_check.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.manifest.outputs.tag }}
+          target_commitish: ${{ github.event.workflow_run.head_sha }}
+          files: dist/ismartgate_cloud.zip
+          generate_release_notes: true
