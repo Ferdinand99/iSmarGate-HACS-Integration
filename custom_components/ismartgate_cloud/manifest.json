@@ -1,17 +1,17 @@
 {
   "domain": "ismartgate_cloud",
   "name": "iSmartGate Cloud",
-  "version": "0.1.0",
-  "documentation": "https://github.com/Ferdinand99/iSmarGate-HACS-Integration",
-  "issue_tracker": "https://github.com/Ferdinand99/iSmarGate-HACS-Integration/issues",
+  "codeowners": [],
+  "config_flow": true,
   "dependencies": [],
+  "documentation": "https://github.com/Ferdinand99/iSmarGate-HACS-Integration",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/Ferdinand99/iSmarGate-HACS-Integration/issues",
+  "loggers": [
+    "custom_components.ismartgate_cloud"
+  ],
   "requirements": [
     "cryptography>=41.0.0"
   ],
-  "codeowners": [],
-  "config_flow": true,
-  "iot_class": "cloud_polling",
-  "loggers": [
-    "custom_components.ismartgate_cloud"
-  ]
+  "version": "0.1.0"
 }

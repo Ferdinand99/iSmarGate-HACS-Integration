@@ -1,8 +1,5 @@
 {
   "name": "iSmartGate Cloud",
   "render_readme": true,
-  "domains": [
-    "ismartgate_cloud"
-  ],
   "homeassistant": "2024.6.0"
 }
