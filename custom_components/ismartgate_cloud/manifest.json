@@ -2,6 +2,8 @@
   "domain": "ismartgate_cloud",
   "name": "iSmartGate Cloud",
   "version": "0.1.0",
+  "documentation": "https://github.com/Ferdinand99/iSmarGate-HACS-Integration",
+  "issue_tracker": "https://github.com/Ferdinand99/iSmarGate-HACS-Integration/issues",
   "dependencies": [],
   "requirements": [
     "cryptography>=41.0.0"
